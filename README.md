@@ -1,7 +1,14 @@
 <!-- TOC -->
   * [专业技能方面](#专业技能方面)
+  * [设计模式](#设计模式)
+    * [单例模式](#单例模式)
+    * [工厂模式](#工厂模式)
+    * [抽象工厂模式](#抽象工厂模式)
+    * [策略模式](#策略模式)
+    * [观察者模式](#观察者模式)
   * [集合](#集合)
   * [JUC多线程、锁](#juc多线程锁)
+    * [volatile关键字作用](#volatile关键字作用)
   * [网络](#网络)
   * [Spring](#spring)
   * [Mybatis](#mybatis)
@@ -29,27 +36,195 @@
 + Linux：基本命令的使用、快速定位和排查问题。
 + 分布式理论：CAP、BASE、2PC、3PC、TCC。
 
+## 设计模式
+### 单例模式
+  保证一个类仅有一个实例，并提供一个全局访问点。使用场景：需要限制实例数量的类。
+```java
+public class Singleton {
+    private volatile static Singleton instance;
+  
+    private Singleton() {}
+  
+    public static Singleton getInstance() {
+        if (instance == null) {
+            synchronized (Singleton.class) {
+                if (instance == null) {
+                    instance = new Singleton();
+                }
+            }
+        }
+        return instance;
+    }
+}
+```
+  + 能够避免实例对象的重复创建，可以减少每次创建对象的时间开销，还能够节约内存空间。
+  + 能够避免由于操作多个实例导致的逻辑错误。
+  + 如果一个实例对象可能贯穿整个应用程序，并且充当统一管理作用，那么可以考虑单例模式。
+  + DCL 双重检查锁定，volatile 防止指令重排序。
+
+### 工厂模式
+定义一个用于创建对象的接口，但是让子类决定实例化哪一个类。使用场景：需要动态创建对象的场景。
+
+### 抽象工厂模式
+提供一个创建一系列相关或相互依赖对象的接口，而不需要指定它们具体的类。使用场景：当需要生成多个产品对象，且它们是相关联的时候。
+
+### 策略模式
+定义了算法家族，分别封装起来，让它们之间可以互相替换，此模式让算法的变化独立于使用算法的客户。使用场景：许多相关的类仅仅是行为有异。
+
+### 观察者模式
+定义对象间的一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并被自动更新。使用场景：当一个对象的改变需要同时改变其他对象，而不知道具
+
 ## 集合
++ 经常用到哪些 Map
++ 这几种 Map 的区别
++ ConcurrentHashMap 怎么保证线程安全
++ ConcurrentHashMap 在 JDK 1.8 前后的锁有什么区别
++ 聊下 HashMap 的原理
++ HashMap 在 Put 时，新链表节点是放在头部还是尾部
++ HashMap 扩容时的流程
++ HashMap 在 JDK 1.8 有什么改变
++ ConcurrentHashMap 在 JDK 1.8 有什么改变
++ TreeMap 的原理
++ Map、List、Set 分别说下你知道的线程安全类和线程不安全的类
+
 
 ## JUC多线程、锁
+### volatile关键字作用
++ Volatile 关键字是 Java 语言提供的一种线程同步机制。
+  + 保证了变量的可见性：当一个线程对变量进行修改时，其他线程能够立即看到这个修改。
+  + 禁止了指令重排：在读取一个 volatile 变量之前，编译器和处理器会将之前对这个变量的修改立刻刷新到主存，在写入一个 volatile 变量之后，编译器和处理器会将该变量的值立即刷新到主存，这确保了变量在读写操作中的一致性。
++ 由于 volatile 变量的特殊性，它只能保证变量的可见性和禁止指令重排，但不能保证原子性，如果需要对一个 volatile 变量进行多个操作，需要加锁。
+---
+
++ 线程池使用的是哪种
++ 线程池参数怎么配置 
++ 线程池各个参数的作用
++ 线程池的参数配置要注意什么
++ 线程池的工作流程
++ JDK 中的并发类知道哪些
++ AQS 的底层原理
++ 介绍下悲观锁和乐观锁
++ 使用过哪些锁
++ synchronized 和 Lock 的区别、使用场景
++ synchronized 原理
++ synchronized 作用于静态方法、普通方法、this、Lock.class 的区别
++ 为什么引入偏向锁、轻量级锁，介绍下升级流程
++ 死锁的必要条件，如何预防死锁
++ 介绍下 CountDownLatch 和 CyclicBarrier
++ 介绍下 CAS，存在什么问题
++ 介绍下 ThreadLocal，存在什么问题
 
 ## 网络
++ HTTPS 是怎么加密的
++ 普通 Hash 和一致性 Hash 原理
++ 一致性 Hash 的缺点
++ TCP 三次握手过程，为什么需要三次握手
++ 为什么 TIME_WAIT 状态需要经过 2MSL 才能返回到 CLOSE 状态
++ TCP 的拥塞控制
++ TCP 如何解决流控、乱序、丢包问题
++ 为什么会出现粘包和拆包，如何解决
++ OSI七层模型分别是什么？各自功能
 
 ## Spring
++ 介绍下 Spring IoC 的流程
++ BeanFactory 和 FactoryBean 的区别
++ Spring 的 AOP 是怎么实现的
++ Spring 的事务传播行为有哪些，讲下嵌套事务
++ 什么情况下对象不能被代理
++ Spring 怎么解决循环依赖的问题
++ 要在 Spring IoC 容器构建完毕之后执行一些逻辑，怎么实现
++ @Resource 和 @Autowire 的区别
++ @Autowire 怎么使用名称来注入
++ bean 的 init-method 属性指定的方法里用到了其他 bean 实例，会有问题吗
++ @PostConstruct 修饰的方法里用到了其他 bean 实例，会有问题吗
++ Spring 中，有两个 id 相同的 bean，会报错吗，如果会报错，在哪个阶段报错
++ Spring 中，bean 的 class 属性指定了一个不存在的 class，会报错吗，如果会报错，在哪个阶段
++ Spring 中的常见扩展点有哪些
 
 
 ## Mybatis
++ Mybatis 中 # 和 $ 的区别
++ 怎么防止 SQL 注入
++ 使用 Mybatis 时，调用 DAO（Mapper）接口时是怎么调用到 SQL 的
++ Mybatis 的缓存机制
++ Mybatis 的一级缓存和二级缓存
++ 简述Mybatis的插件运行原理，以及如何编写一个插件
++ Mybatis的动态SQL是如何实现的
++ 
 
 
 ## MySQL
++ MySQL 索引的数据结构
++ 为什么使用 B+ 树，与其他索引相比有什么优点
++ 各种索引之间的区别
++ B+ 树在进行范围查找时怎么处理
++ MySQL 索引叶子节点存放的是什么
++ 联合索引（复合索引）的底层实现
++ MySQL 如何锁住一行数据
++ SELECT 语句能加互斥锁吗
++ 多个事务同时对一行数据进行 SELECT FOR UPDATE 会阻塞还是异常
++ MySQL 使用的版本和执行引擎
++ MySQL 不同执行引擎的区别
++ MySQL 的事务隔离级别
++ MySQL 的可重复读是怎么实现的
++ MySQL 是否会出现幻读
++ MySQL 的 gap 锁
++ MySQL 的主从同步原理
++ 分库分表的实现方案
++ 分布式唯一 ID 方案
++ 如何优化慢查询
++ explain 中每个字段的意思
++ explain 中的 type 字段有哪些常见的值
++ explain 中你通常关注哪些字段，为什么
 
 ## JVM
++ 运行时数据区
++ 服务器使用的什么垃圾收集器
++ CMS 垃圾收集的原理
++ G1 垃圾收集的特点，为什么低延迟
++ 有哪些垃圾回收算法，优缺点
++ 哪些对象可以作为 GC Roots
++ 有哪些类加载器
++ 双亲委派模式，哪些场景是打破双亲委派模式
++ 线上服务器出现频繁 Full GC，怎么排查
++ 定位问题常用哪些命令
++ 介绍下 JVM 调优的过程
 
 ## Redis
++ 项目中使用的 Redis 版本
++ Redis 在项目中的使用场景
++ Redis 怎么保证高可用
++ Redis 的选举流程
++ Redis 和 Memcached 的区别
++ Redis 的集群模式
++ Redis 集群要增加分片，槽的迁移怎么保证无损
++ Redis 分布式锁的实现
++ Redis 删除过期键的策略
++ Redis 的内存淘汰策略
++ Redis 的 Hash 对象底层结构
++ Redis 中 Hash 对象的扩容流程
++ Redis 的 Hash 对象的扩容流程在数据量大的时候会有什么问题吗
++ Redis 的持久化机制有哪几种
++ RDB 和 AOF 的实现原理、优缺点
++ AOF 重写的过程
++ 哨兵模式的原理
++ 使用缓存时，先操作数据库还是先操作缓存
++ 为什么是让缓存失效，而不是更新缓存
++ 缓存穿透、缓存击穿、缓存雪崩
++ 更新缓存的几种设计模式
 
 ## Kafka
 
 ## Zookeeper
++ Zookeeper 的使用场景
++ Zookeeper 怎么实现分布式锁
++ Zookeeper 怎么保证数据的一致性
++ ZAB 协议的原理
++ Zookeeper 遵循 CAP 中的哪些
++ Zookeeper 和 Eureka 的区别
++ Zookeeper 的 Leader 选举
++ Observer 的作用
++ Leader 发送了 commit 消息，但是所有的 follower 都没有收到这条消息，Leader 就挂了，后续会怎么处理
 
 ## 分布式理论
 + CAP 理论
