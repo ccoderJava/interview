@@ -328,10 +328,43 @@ https://blog.csdn.net/lzb348110175/article/details/106071906
   + 从 从写入数据
 ### 分库分表的实现方案
 
-+ 分布式唯一 ID 方案
-+ 如何优化慢查询
-+ explain 中每个字段的意思
-+ explain 中的 type 字段有哪些常见的值
+### 分布式唯一 ID 方案
++ 唯一性
++ 有序性
++ 可用心
++ 自用性 无中心
++ 安全性
++ 方案
+  + 批量缓存自增 根据机器数量分配不同段
+  + redis
+  + uuid
+  + snowflake
+    + 41位时间戳
+    + 10位机器id
+    + 12位序列号
+    + 1位符号位
+
+### 如何优化慢查询
++ 索引优化
++ show_query_log 记录超时log
++ 拆表
+
+### explain 中每个字段的意思
++ id 
++ select_type SQL类型
++ table 表
++ partitions 分区
++ type 类型
++ possible_keys 可能使用的索引
++ ...
+### explain 中的 type 字段有哪些常见的值
++ system 系统表 记录一条数据
++ const 常量
++ eq_ref 唯一索引
++ ref 非唯一性索引扫描
++ range 索引范围
++ index 遍历索引树
++ all 全表扫描
 + explain 中你通常关注哪些字段，为什么
 
 ## JVM
