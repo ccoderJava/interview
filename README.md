@@ -151,15 +151,85 @@ public class Singleton {
 + OSI七层模型分别是什么？各自功能
 
 ## Spring
-+ 介绍下 Spring IoC 的流程
-+ BeanFactory 和 FactoryBean 的区别
-+ Spring 的 AOP 是怎么实现的
-+ Spring 的事务传播行为有哪些，讲下嵌套事务
-+ 什么情况下对象不能被代理
-+ Spring 怎么解决循环依赖的问题
-+ 要在 Spring IoC 容器构建完毕之后执行一些逻辑，怎么实现
-+ @Resource 和 @Autowire 的区别
-+ @Autowire 怎么使用名称来注入
+### 介绍下 Spring IoC 的流程
+### BeanFactory 和 FactoryBean 的区别
++ BeanFactory Spring中主要的容器，负责Bean的生命周期、依赖关系的管理
+  + Bean的实例化:提供多种Bean的实例化方式、构造器方式、工厂方法方式、静态工厂方法方式
+  + Bean的生命周期管理：会在Bean的创建完成后进行初始化，包括属性值设置、回调函数等。
+  + Bean的依赖关系管理：可以通过依赖注入的方式将依赖的Bean注入到当前Bean中。
++ FactoryBean 工厂Bean接口，Spring可以通过该方式创建bean，返回值是通过它创建的bean
+  + 自定义实例化Bean: 通过实现FactoryBean可以自己通过编程方式控制Bean的实例化过程
+  + Bean对象缓存：FactoryBean可以将创建的Bean对象进行缓存，提高Bean对象创建效率
+  + 返回其他类型：可以返回任意类型对象，不仅仅是Bean对象
++ BeanFactory 是一个容器，负责管理 Bean 的生命周期和依赖关系，而 FactoryBean 是一个工厂 Bean 接口，用于创建 Bean 实例，可以自定义 Bean 的创建过程并返回任意类型的对象。
+
+### Spring 的 AOP 是怎么实现的
+代理
++ JDK动态代理
+  + 接口代理
++ CGLIB动态代理
+  + 类代理
++ 对一个对象进行AOP时会对其代理对象，代理对象进行暴露，从而增强日志记录、性能监控、异常监控等处理
++ Interceptor Chain拦截器执行链和代理对象，当对象方法被调用时，会先执行拦截器链，然后再执行代理对象的方法，从而进行增强处理
++ 
+### Spring 的事务传播行为有哪些，讲下嵌套事务
+事务存在两个及两个以上
++ 支持当前事务
+  + REQUIRED 需要有： 有则加入、无则创建
+  + SUPPORTS 支持： 有则加入、无则不加入
+  + MANDATORY 强制： 有则加入、无则抛出异常
++ 不支持当前事务
+  + REQUIRES_NEW 新建： 有则挂起、无则创建
+  + NOT_SUPPORTED 不支持： 有则挂起、无则不加入
+  + NEVER 不允许： 有则抛出异常、无则不加入
++ 嵌套事务Nested
+  + NESTED 嵌套： 有则创建嵌套事务、无则创建
+
+
+### 什么情况下对象不能被代理
++ JDK动态代理
+  + 必须实现接口
+  + Spring管理的Bean
++ Cglib代理
+  + 被final修饰
+  + 没有无参构造
+  + synchronized修饰
+
+### Spring 怎么解决循环依赖的问题
++ 循环依赖产生原因
+  + 出现循环依赖的Bean必须要是单例
+  + 依赖注入的方式不能全是构造器注入的方式
++ 如何解决
+  + 三级缓存
+  + singletonObjects：缓存某个beanName对应的经过了完整生命周期的bean
+  + earlySingletonObjects：缓存某个beanName对应的bean，但是bean的生命周期还没有完全走完
+  + singletonFactories：缓存某个beanName对应的ObjectFactory，用于创建bean
+
+### 要在 Spring IoC 容器构建完毕之后执行一些逻辑，怎么实现
+https://blog.csdn.net/lzb348110175/article/details/106071906
+
+主要是对于Bean的初始化完成后执行一些业务逻辑
++ 实现BeanPostProcessor接口 重写postProcessorAfterInitialization方法、postProcessorBeforeInitialization方法、postProcessorInitialization方法
++ 实现SmartLifecycle接口，重写start方法、stop方法、isRunning方法、isAutoStartup方法、getPhase方法
++ 实现ApplicationListener接口，重写onApplicationEvent方法
++ 实现ApplicationContextAware接口，重写setApplicationContext方法
++ 实现BeanNameAware接口，重写setBeanName方法
++ 实现BeanFactoryAware接口，重写setBeanFactory方法
++ 实现InitializingBean接口，重写afterPropertiesSet方法
++ 实现DisposableBean接口，重写destroy方法
++ 使用@PostConstruct注解
++ 使用@PreDestroy注解
++ 使用@Bean的initMethod属性
++ 实现CommandRunner接口 实现run方法
+
+### @Resource 和 @Autowire 的区别
++ 作用域需要注入的属性上或setter
++ @Autowire 默认按类型注入，如果有多个类型相同的bean，会按名称注入
++ @Resource 按照BeanName注入，如果没有指定BeanName，会按照类型注入
+
+### @Autowire 怎么使用名称来注入
++ @Qualifier
+
 + bean 的 init-method 属性指定的方法里用到了其他 bean 实例，会有问题吗
 + @PostConstruct 修饰的方法里用到了其他 bean 实例，会有问题吗
 + Spring 中，有两个 id 相同的 bean，会报错吗，如果会报错，在哪个阶段报错
