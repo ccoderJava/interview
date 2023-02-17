@@ -343,7 +343,10 @@ https://blog.csdn.net/lzb348110175/article/details/106071906
     + 10位机器id
     + 12位序列号
     + 1位符号位
-
+  + Leaf 美团分布式ID发号器
+    + 1位标志符
+    + 41位时间戳
+    + 22位序列号
 ### 如何优化慢查询
 + 索引优化
 + show_query_log 记录超时log
